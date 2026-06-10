@@ -35,7 +35,7 @@ public class MakeMoreStatisticalTest extends TestCase {
 
     public void testSamples() {
         var generator = new Generator(2147483647);
-        float[] floats = generator.generateRandomArr(3);
+        Float[] floats = generator.generateRandomArr(3);
         floats = Utils.normalizeArr(floats);
         // normalized array should have length 3 and sum to ~1.0
         assertEquals(3, floats.length);
@@ -53,7 +53,7 @@ public class MakeMoreStatisticalTest extends TestCase {
 
     public void testDummy() {
         var generator = new Generator(2147483647);
-        var floats = new float[]{0.6064F, 0.3033F, 0.0903F};
+        var floats = new Float[]{0.6064F, 0.3033F, 0.0903F};
         int[] samples = generator.createSample(floats, 3);
         // deterministic seed should produce valid sample indices
         assertEquals(3, samples.length);

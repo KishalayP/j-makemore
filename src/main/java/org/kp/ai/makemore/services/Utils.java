@@ -2,6 +2,26 @@ package org.kp.ai.makemore.services;
 
 public class Utils {
 
+    public static Float[] normalizeArr(Float[] floats) {
+        var normalizedArr = new Float[floats.length];
+        var sum = 0F;
+        for (Float aFloat : floats) {
+            if (aFloat == null) {
+                aFloat = 0F;
+            }
+            sum += aFloat;
+        }
+        sum += floats.length;
+        for (int i = 0; i < floats.length; i++) {
+            Float aFloat = floats[i];
+            if (aFloat == null) {
+                aFloat = 0F;
+            }
+            normalizedArr[i] = (aFloat + 1) / sum;
+        }
+        return normalizedArr;
+    }
+
     public static float[] normalizeArr(float[] floats) {
         var normalizedArr = new float[floats.length];
         var sum = 0F;

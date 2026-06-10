@@ -1,10 +1,10 @@
 package org.kp.ai.makemore.bigrams;
 
+import org.kp.ai.makemore.model.Matrix;
 import org.kp.ai.makemore.services.Utils;
 import org.kp.ai.makemore.services.Generator;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.kp.ai.makemore.services.Utils.getItoS;
@@ -12,11 +12,11 @@ import static org.kp.ai.makemore.services.Utils.getItoS;
 public class BigramsStatistical implements Bigram {
 
     public Generator generator;
-    public int[][] counts;
-    public float[][] predictions;
+    public Matrix<Float> countsMatrix;
+    public Matrix<Float> predictions;
 
     public BigramsStatistical(long randomSeed) {
-        this.counts = new int[27][27];
+        this.countsMatrix = new Matrix<>(Float.class, 27, 27);
         generator = new Generator(randomSeed);
     }
 
@@ -31,7 +31,7 @@ public class BigramsStatistical implements Bigram {
         var sb = new StringBuilder();
         var idx = 0;
         do {
-            float[] prediction = predictions[idx];
+            Float[] prediction = predictions.getRow(idx);
             idx = generator.createSample(prediction);
             sb.append(getItoS(idx));
         } while (idx != 0);
@@ -58,7 +58,7 @@ public class BigramsStatistical implements Bigram {
             for (i = 0; i < charArray.length - 1; i++) {
                 var i1 = Utils.getStoI(charArray[i]);
                 var i2 = Utils.getStoI(charArray[i + 1]);
-                var prediction = predictions[i1][i2];
+                var prediction = predictions.getValue(i1, i2);
                 logLikeliHood += Math.log(prediction);
                 c++;
             }
@@ -68,11 +68,11 @@ public class BigramsStatistical implements Bigram {
 
     @Override
     public String toString() {
-        var sb = new StringBuilder();
-        sb.append("Bigrams{");
-        append2DArray(sb, counts);
-        append2DArray(sb, predictions);
-        return sb.toString();
+        return "BigramsStatistical{" +
+                "generator=" + generator +
+                ", countsMatrix=" + countsMatrix +
+                ", predictions=" + predictions +
+                '}';
     }
 
     private void populateBigrams(List<String> input) {
@@ -91,35 +91,22 @@ public class BigramsStatistical implements Bigram {
         if (i1 < 0 || i2 < 0) {
             return;
         }
-        counts[i1][i2] += 1;
+        setFrequencyOfBigram(i1, i2);
+    }
+
+    private void setFrequencyOfBigram(int i1, int i2) {
+        Float value = countsMatrix.getValue(i1, i2);
+        if (value == null) {
+            countsMatrix.setValue(i1, i2, 1F);
+        } else {
+            countsMatrix.setValue(i1, i2, ++value);
+        }
     }
 
     private void populatePredictions() {
-        predictions = new float[counts.length][counts[0].length];
-        for (int i = 0; i < counts.length; i++) {
-            predictions[i] = Utils.normalizeArr(counts[i]);
+        predictions = new Matrix<>(Float.class, countsMatrix.getRowSize(), countsMatrix.getColumnSize());
+        for (int i = 0; i < countsMatrix.getRowSize(); i++) {
+            predictions.setRow(i, Utils.normalizeArr(countsMatrix.getRow(i)));
         }
-    }
-
-    private void append2DArray(StringBuilder sb, int[][] matrix) {
-        sb.append("counts").append(" = [");
-        for (int[] row : matrix) {
-            sb.append("\n");
-            for (float value : row) {
-                sb.append(value).append(", ");
-            }
-        }
-        sb.append("]\n");
-    }
-
-    private void append2DArray(StringBuilder sb, float[][] matrix) {
-        sb.append("predictions").append(" = [\n");
-        for (float[] row : matrix) {
-            sb.append("\n");
-            for (float value : row) {
-                sb.append(value).append(", ");
-            }
-        }
-        sb.append("]\n");
     }
 }
