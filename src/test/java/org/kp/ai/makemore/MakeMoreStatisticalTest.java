@@ -27,6 +27,7 @@ public class MakeMoreStatisticalTest extends TestCase {
             assertTrue("Prediction contains invalid characters: " + p, p.matches("[a-z]+\\."));
         }
 
+        System.out.println(makeMore);
         float loss = makeMore.getLoss();
         // Check loss is reasonable and close to previously observed value but allow some tolerance
         assertTrue("Loss should be positive", loss > 0F);
