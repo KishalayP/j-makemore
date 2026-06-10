@@ -26,4 +26,18 @@ public class Utils {
         }
         return normalizedArr;
     }
+
+    public static char getItoS(Integer chNum) {
+        if (chNum == 0) {
+            return '.';
+        }
+        return (char) (chNum + 96);
+    }
+
+    public static int getStoI(Character ch) {
+        if (ch == '.') {
+            return 0;
+        }
+        return ((int) (ch)) - (96);
+    }
 }

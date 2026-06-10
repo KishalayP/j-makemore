@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BigramsStatistical implements Bigram {
+import static org.kp.ai.makemore.services.Utils.getItoS;
 
-    public static final List<Character> stoi = intializeStoi();
-    public static final List<Integer> itos = intializeItos();
+public class BigramsStatistical implements Bigram {
 
     public Generator generator;
     public int[][] counts;
@@ -57,8 +56,8 @@ public class BigramsStatistical implements Bigram {
             char[] charArray = paddedWord.toCharArray();
             int i;
             for (i = 0; i < charArray.length - 1; i++) {
-                var i1 = itos.get(charArray[i]);
-                var i2 = itos.get(charArray[i + 1]);
+                var i1 = Utils.getStoI(charArray[i]);
+                var i2 = Utils.getStoI(charArray[i + 1]);
                 var prediction = predictions[i1][i2];
                 logLikeliHood += Math.log(prediction);
                 c++;
@@ -87,31 +86,12 @@ public class BigramsStatistical implements Bigram {
     }
 
     private void addBigram(char ch1, char ch2) {
-        var i1 = itos.get(ch1);
-        var i2 = itos.get(ch2);
+        var i1 = Utils.getStoI(ch1);
+        var i2 = Utils.getStoI(ch2);
         if (i1 < 0 || i2 < 0) {
             return;
         }
         counts[i1][i2] += 1;
-    }
-
-    private static List<Integer> intializeItos() {
-        var stoi = new LinkedList<Integer>();
-        int c = 0;
-        stoi.add(c);
-        for (char ch = 'a'; ch <= 'z'; ch++) {
-            stoi.add(c++);
-        }
-        return stoi;
-    }
-
-    private static List<Character> intializeStoi() {
-        var stoi = new LinkedList<Character>();
-        stoi.add('.');
-        for (char ch = 'a'; ch <= 'z'; ch++) {
-            stoi.add(ch);
-        }
-        return stoi;
     }
 
     private void populatePredictions() {
@@ -119,10 +99,6 @@ public class BigramsStatistical implements Bigram {
         for (int i = 0; i < counts.length; i++) {
             predictions[i] = Utils.normalizeArr(counts[i]);
         }
-    }
-
-    public Character getItoS(int i) {
-        return stoi.get(i);
     }
 
     private void append2DArray(StringBuilder sb, int[][] matrix) {
