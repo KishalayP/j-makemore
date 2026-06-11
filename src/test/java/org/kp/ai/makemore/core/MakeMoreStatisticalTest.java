@@ -1,8 +1,7 @@
-package org.kp.ai.makemore;
+package org.kp.ai.makemore.core;
 
 import junit.framework.TestCase;
 import org.kp.ai.makemore.bigrams.BigramsStatistical;
-import org.kp.ai.makemore.core.MakeMore;
 import org.kp.ai.makemore.services.Generator;
 import org.kp.ai.makemore.services.Utils;
 

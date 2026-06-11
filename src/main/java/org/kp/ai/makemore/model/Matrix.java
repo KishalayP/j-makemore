@@ -37,6 +37,9 @@ public class Matrix<T> {
         this.defaultValue = defaultValue;
         this.capacity = rowSize * columnSize;
         this.flatArray = (T[]) Array.newInstance(clazz, capacity);
+        if (supplier == null) {
+            throw new IllegalArgumentException("Supplier cannot be null.");
+        }
         for (int i = 0; i < flatArray.length; i++) {
             flatArray[i] = getDefaultValIfNull(supplier.get());
         }
@@ -51,12 +54,14 @@ public class Matrix<T> {
     }
 
     public void setValue(int row, int column, T value) {
+        inputValueValidation(value);
         rowValidations(row, 1);
         columnValidations(column, 1);
         flatArray[getRowStartInFlatArr(row) + column] = getDefaultValIfNull(value);
     }
 
     public void setRow(int row, T[] values) {
+        inputValueValidation(values);
         rowValidations(row, values.length);
         int rowStartInFlatArr = getRowStartInFlatArr(row);
         for (int i = rowStartInFlatArr; i < rowStartInFlatArr + values.length; i++) {
@@ -65,6 +70,7 @@ public class Matrix<T> {
     }
 
     public void setColumn(int column, T[] values) {
+        inputValueValidation(values);
         columnValidations(column, values.length);
         for (int i = 0; i < rowSize; i++) {
             flatArray[getRowStartInFlatArr(i) + column] = getDefaultValIfNull(values[i]);
@@ -153,6 +159,12 @@ public class Matrix<T> {
         }
         if (valueSize > 1 && valueSize != rowSize) {
             throw new IllegalArgumentException("Number of values for a column must equal row size (" + rowSize + ")");
+        }
+    }
+
+    private void inputValueValidation(Object input) {
+        if(input ==null){
+            throw new IllegalArgumentException("Input value cannot be null");
         }
     }
 
