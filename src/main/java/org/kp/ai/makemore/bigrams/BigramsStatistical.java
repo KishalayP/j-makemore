@@ -16,7 +16,7 @@ public class BigramsStatistical implements Bigram {
     public Matrix<Float> predictions;
 
     public BigramsStatistical(long randomSeed) {
-        this.countsMatrix = new Matrix<>(Float.class, 27, 27);
+        this.countsMatrix = new Matrix<>(Float.class, 27, 27, 0F);
         generator = new Generator(randomSeed);
     }
 
@@ -104,7 +104,7 @@ public class BigramsStatistical implements Bigram {
     }
 
     private void populatePredictions() {
-        predictions = new Matrix<>(Float.class, countsMatrix.getRowSize(), countsMatrix.getColumnSize());
+        predictions = new Matrix<>(Float.class, countsMatrix.getRowSize(), countsMatrix.getColumnSize(), 0F);
         for (int i = 0; i < countsMatrix.getRowSize(); i++) {
             predictions.setRow(i, Utils.normalizeArr(countsMatrix.getRow(i)));
         }
